@@ -131,6 +131,65 @@ document.querySelectorAll("[data-faq-carousel]").forEach((carousel) => {
   window.requestAnimationFrame(() => goToSlide(0, "auto"));
 });
 
+document.querySelectorAll("[data-card-carousel]").forEach((track) => {
+  const cards = Array.from(track.children);
+  const controls = track.previousElementSibling?.matches("[data-card-controls]")
+    ? track.previousElementSibling
+    : null;
+  const prevButton = controls?.querySelector("[data-card-prev]");
+  const nextButton = controls?.querySelector("[data-card-next]");
+  const count = controls?.querySelector("[data-card-count]");
+  let currentIndex = 0;
+  let scrollTimer;
+
+  if (!cards.length || !controls) return;
+
+  function updateCount() {
+    if (!count) return;
+    count.textContent = `${currentIndex + 1} / ${cards.length}`;
+  }
+
+  function syncCurrentFromScroll() {
+    const trackRect = track.getBoundingClientRect();
+    const trackCenter = trackRect.left + trackRect.width / 2;
+    let closestIndex = 0;
+    let closestDistance = Infinity;
+
+    cards.forEach((card, index) => {
+      const rect = card.getBoundingClientRect();
+      const cardCenter = rect.left + rect.width / 2;
+      const distance = Math.abs(cardCenter - trackCenter);
+
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    currentIndex = closestIndex;
+    updateCount();
+  }
+
+  function goToCard(index, behavior = "smooth") {
+    currentIndex = (index + cards.length) % cards.length;
+    const targetLeft = cards[currentIndex].offsetLeft - track.offsetLeft;
+
+    track.scrollTo({ left: targetLeft, behavior });
+    updateCount();
+  }
+
+  prevButton?.addEventListener("click", () => goToCard(currentIndex - 1));
+  nextButton?.addEventListener("click", () => goToCard(currentIndex + 1));
+
+  track.addEventListener("scroll", () => {
+    window.clearTimeout(scrollTimer);
+    scrollTimer = window.setTimeout(syncCurrentFromScroll, 80);
+  }, { passive: true });
+
+  window.addEventListener("resize", () => goToCard(currentIndex, "auto"));
+  window.requestAnimationFrame(() => goToCard(0, "auto"));
+});
+
 const sections = Array.from(document.querySelectorAll("main section[id]"));
 
 function setActiveNav() {
