@@ -2765,3 +2765,89 @@ svg {
     grid-row: 1;
   }
 }
+
+/* Stable absolute mobile header layout */
+@media (max-width: 700px) {
+  .nav-wrap {
+    position: relative;
+    display: block;
+  }
+
+  html[dir="rtl"] .brand {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: calc(100% - 110px);
+    transform: translateY(-50%);
+    direction: rtl;
+  }
+
+  html[dir="rtl"] .language-switch {
+    position: absolute;
+    top: 50%;
+    left: 48px;
+    transform: translateY(-50%);
+  }
+
+  html[dir="rtl"] .menu-toggle {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+  }
+
+  html[dir="ltr"] .brand {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: calc(100% - 112px);
+    transform: translateY(-50%);
+    direction: ltr;
+  }
+
+  html[dir="ltr"] .language-switch {
+    position: absolute;
+    top: 50%;
+    right: 48px;
+    transform: translateY(-50%);
+  }
+
+  html[dir="ltr"] .menu-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+  }
+}
+
+/* Keep the mobile logo inside the visible header */
+@media (max-width: 700px) {
+  html[dir="rtl"] .brand {
+    direction: ltr;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
+
+  html[dir="rtl"] .brand-text {
+    direction: rtl;
+    text-align: right;
+  }
+
+  html[dir="rtl"] .brand-mark {
+    flex: 0 0 38px;
+  }
+}
+
+@media (max-width: 700px) {
+  html[dir="rtl"] .brand {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 700px) {
+  html[dir="rtl"] .brand {
+    justify-content: flex-end;
+    padding-left: min(18vw, 72px);
+    box-sizing: border-box;
+  }
+}
